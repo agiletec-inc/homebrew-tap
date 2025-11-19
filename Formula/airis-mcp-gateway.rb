@@ -1,8 +1,8 @@
 class AirisMcpGateway < Formula
   desc "Unified MCP server management for Claude Code, Cursor, Zed, and more"
   homepage "https://github.com/agiletec-inc/airis-mcp-gateway"
-  url "https://github.com/agiletec-inc/airis-mcp-gateway/archive/refs/tags/v1.3.4.tar.gz"
-  sha256 "f5ea0f804f4bfbda0dfff8aaf73580ccfcb8e31cce2a336ae16f4995f21e18ca"
+  url "https://github.com/agiletec-inc/airis-mcp-gateway/archive/refs/tags/v1.3.5.tar.gz"
+  sha256 "d5211ca9ea2181cac274e16b6d8690f56382ad922518e584b3285cd4ace50d3f"
   license "MIT"
   head "https://github.com/agiletec-inc/airis-mcp-gateway.git", branch: "master"
 
