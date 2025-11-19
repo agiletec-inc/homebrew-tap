@@ -6,26 +6,17 @@ class AirisWorkspace < Formula
   sha256 "40a45311c3b42da34e7904e11080ace982d1be91bcf652b74781122c3143f6db"
   version "1.6.0"
 
-  # Docker backend is required - airis is a Docker-first tool
-  on_arm do
-    depends_on cask: "orbstack"
-  end
-
-  on_intel do
-    depends_on cask: "docker"
-  end
-
   def install
     bin.install "airis"
   end
 
   def caveats
     <<~EOS
-      Airis is a Docker-first monorepo workspace manager.
+      Airis requires a Docker backend to run.
 
-      Make sure your Docker backend is running before using airis:
-        - Apple Silicon: OrbStack (installed as dependency)
-        - Intel Mac: Docker Desktop (installed as dependency)
+      Install one of the following if not already installed:
+        - Apple Silicon: brew install --cask orbstack
+        - Intel Mac: brew install --cask docker
 
       Get started:
         mkdir my-project && cd my-project
