@@ -1,9 +1,9 @@
 class Airis < Formula
   desc "Docker-first monorepo workspace manager for rapid prototyping"
   homepage "https://github.com/agiletec-inc/airis-workspace"
-  url "https://github.com/agiletec-inc/airis-workspace/releases/download/v0.2.0/airis-0.2.0-aarch64-apple-darwin.tar.gz"
-  sha256 "3b9e188ee7d98c47875afd7cb63fc1ddeb212424ca12cfb84418df4c143b1598"
-  version "0.2.0"
+  url "https://github.com/agiletec-inc/airis-workspace/releases/download/v1.4.0/airis-1.4.0-aarch64-apple-darwin.tar.gz"
+  sha256 "a6d6df747ff1c09396c514d0b3e7e8649e9c6011948d4f9116f761da54af53ea"
+  version "1.4.0"
 
   def install
     bin.install "airis"
