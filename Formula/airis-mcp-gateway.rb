@@ -4,22 +4,31 @@ class AirisMcpGateway < Formula
   url "https://github.com/agiletec-inc/airis-mcp-gateway/archive/refs/tags/v1.3.3.tar.gz"
   sha256 "df49c575ff0bdb03c910c06720adb1b1a7b47ab67eff80b05e780f7634f27e14"
   license "MIT"
+  head "https://github.com/agiletec-inc/airis-mcp-gateway.git", branch: "master"
 
   depends_on "node" => :build
   depends_on "pnpm" => :build
-  depends_on "docker"
+
+  # Note: Requires Docker-compatible runtime (OrbStack, Docker Desktop, Colima, etc.)
+  # Not enforced as dependency to allow flexibility in runtime choice
 
   def install
-    # Install npm dependencies
-    system "pnpm", "install", "--frozen-lockfile"
+    # Install only CLI package dependencies using filter to avoid entire monorepo
+    system "pnpm", "install", "--frozen-lockfile", "--filter", "@agiletec/airis-mcp-gateway"
 
     # Build CLI package
-    cd "packages/cli" do
-      system "pnpm", "build"
-    end
+    system "pnpm", "--filter", "@agiletec/airis-mcp-gateway", "build"
 
-    # Install CLI globally
-    prefix.install Dir["*"]
+    # Install only necessary files (exclude node_modules to reduce size)
+    # CLI package
+    (prefix/"packages/cli").install Dir["packages/cli/bin", "packages/cli/dist", "packages/cli/package.json"]
+
+    # Scripts for post_install
+    prefix.install "scripts"
+
+    # Config files
+    prefix.install "mcp-config.json" if File.exist?("mcp-config.json")
+    prefix.install "docker-compose.yml" if File.exist?("docker-compose.yml")
 
     # Create symlink for CLI
     bin.install_symlink prefix/"packages/cli/bin/airis-gateway.js" => "airis-gateway"
@@ -41,19 +50,22 @@ class AirisMcpGateway < Formula
 
       ✨ Your existing IDE MCP configurations have been automatically imported!
 
+      Prerequisites:
+        - Docker-compatible runtime required (OrbStack, Docker Desktop, Colima, etc.)
+        - Ensure your Docker runtime is running before starting
+
       Quick Start:
-        1. Ensure Docker is running
-        2. Run: airis-gateway install
-        3. Restart your editors (Claude Code, Cursor, Zed, etc.)
+        1. Run: airis-gateway install
+        2. Restart your editors (Claude Code, Cursor, Zed, etc.)
 
       What was imported:
         - Claude Desktop, Cursor, Windsurf, Zed configs (if installed)
         - All MCP servers merged into unified Gateway
 
       Access URLs:
-        Gateway:     http://localhost:9090
-        Settings UI: http://localhost:5173
-        API Docs:    http://localhost:8001/docs
+        Gateway:     http://localhost:9390
+        Settings UI: http://localhost:5273
+        API Docs:    http://localhost:9400/docs
 
       Documentation: https://github.com/agiletec-inc/airis-mcp-gateway
     EOS
