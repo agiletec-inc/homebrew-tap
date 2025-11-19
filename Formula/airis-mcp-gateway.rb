@@ -4,35 +4,22 @@ class AirisMcpGateway < Formula
   url "https://github.com/agiletec-inc/airis-mcp-gateway/releases/download/v1.4.0/airis-mcp-gateway-1.4.0-universal.tar.gz"
   sha256 "fe1bc7684b2adf874be525c15efed6e99fab83769f5795eaca8728d6d71bb755"
   license "MIT"
-  head "https://github.com/agiletec-inc/airis-mcp-gateway.git", branch: "master"
 
-  depends_on "node" => :build
-  depends_on "pnpm" => :build
+  depends_on "node"
 
   # Note: Requires Docker-compatible runtime (OrbStack, Docker Desktop, Colima, etc.)
   # Not enforced as dependency to allow flexibility in runtime choice
 
   def install
-    # Install only CLI package dependencies using filter to avoid entire monorepo
-    system "pnpm", "install", "--frozen-lockfile", "--filter", "@agiletec/airis-mcp-gateway"
+    # Pre-built tarball includes: bin, dist, node_modules, scripts
+    # No pnpm install or build needed - just copy files
 
-    # Build CLI package
-    system "pnpm", "--filter", "@agiletec/airis-mcp-gateway", "build"
-
-    # Install only necessary files (exclude root node_modules to reduce size)
-    # CLI package with its node_modules (required for runtime)
-    (prefix/"packages/cli").install Dir["packages/cli/bin", "packages/cli/dist", "packages/cli/node_modules", "packages/cli/package.json"]
-
-    # Scripts for post_install
-    prefix.install "scripts"
-
-    # Config files
-    prefix.install "mcp-config.json" if File.exist?("mcp-config.json")
-    prefix.install "docker-compose.yml" if File.exist?("docker-compose.yml")
+    # Install CLI files
+    prefix.install Dir["*"]
 
     # Create symlink for CLI
-    bin.install_symlink prefix/"packages/cli/bin/airis-gateway.js" => "airis-gateway"
-    bin.install_symlink prefix/"packages/cli/bin/airis-gateway.js" => "airis-mcp"
+    bin.install_symlink prefix/"bin/airis-gateway.js" => "airis-gateway"
+    bin.install_symlink prefix/"bin/airis-gateway.js" => "airis-mcp"
   end
 
   def post_install
