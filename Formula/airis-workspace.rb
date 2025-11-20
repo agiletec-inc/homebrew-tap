@@ -2,9 +2,9 @@ class AirisWorkspace < Formula
   desc "Docker-first monorepo workspace manager for rapid prototyping"
   homepage "https://github.com/agiletec-inc/airis-workspace"
   license "MIT"
-  url "https://github.com/agiletec-inc/airis-workspace/releases/download/v1.12.2/airis-1.12.2-aarch64-apple-darwin.tar.gz"
-  sha256 "c70ceae395dcfd9ba8cf64c8255948f87c78dade6cd849ad95054debad3b4f41"
-  version "1.12.2"
+  url "https://github.com/agiletec-inc/airis-workspace/releases/download/v1.12.3/airis-1.12.3-aarch64-apple-darwin.tar.gz"
+  sha256 "6c4dc2f31af8af372ee335cf9dab69747365dbb92688fbace9b236d0e35eeee5"
+  version "1.12.3"
 
   # Docker backend is required - this is a Docker-first tool
   on_arm do
