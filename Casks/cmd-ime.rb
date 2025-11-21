@@ -1,6 +1,6 @@
 cask "cmd-ime" do
-  version "1.1.2"
-  sha256 "6eba61c314c477e62f34f330be151f39a51826ebf930e2ae6f1a43f569ce7ae3"
+  version "1.1.3"
+  sha256 "25fb3043d6be1f8a0492fb58d778e2e9ae584744bde5051f059080489caf2226"
 
   url "https://github.com/agiletec-inc/cmd-ime/releases/download/v#{version}/cmd-ime-#{version}.dmg"
   name "⌘IME"
