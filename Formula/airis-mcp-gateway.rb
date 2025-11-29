@@ -8,21 +8,24 @@ class AirisMcpGateway < Formula
   depends_on "node@20"
 
   def install
-    # Build CLI
-    cd "packages/cli" do
-      system "npm", "install", "--production=false"
+    # Build CLI in packages/cli directory
+    cli_dir = buildpath/"packages/cli"
+    cd cli_dir do
+      system "npm", "install"
       system "npm", "run", "build"
-      # Remove dev dependencies after build
       system "npm", "prune", "--production"
     end
 
-    # Install CLI preserving directory structure
-    (libexec/"packages/cli").install Dir["packages/cli/*"]
+    # Install CLI to libexec
+    libexec.install cli_dir/"dist"
+    libexec.install cli_dir/"node_modules"
+    libexec.install cli_dir/"package.json"
+    (libexec/"bin").install cli_dir/"bin/airis-gateway.js"
 
     # Create wrapper script
     (bin/"airis-gateway").write <<~EOS
       #!/bin/bash
-      exec "#{Formula["node@20"].opt_bin}/node" "#{libexec}/packages/cli/bin/airis-gateway.js" "$@"
+      exec "#{Formula["node@20"].opt_bin}/node" "#{libexec}/bin/airis-gateway.js" "$@"
     EOS
 
     bin.install_symlink "airis-gateway" => "airis-mcp"
