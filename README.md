@@ -6,6 +6,11 @@ Official Homebrew tap for [Agiletec Inc.](https://github.com/agiletec-inc) packa
 
 ```bash
 brew tap agiletec-inc/tap
+
+# Install everything at once
+brew install airis-suite
+
+# Or install individually
 brew install airis-mcp-gateway airis-workspace mindbase airiscode airis-agent
 ```
 
@@ -13,6 +18,7 @@ brew install airis-mcp-gateway airis-workspace mindbase airiscode airis-agent
 
 | Formula | Description | Command |
 |---------|-------------|---------|
+| `airis-suite` | **All AIRIS tools** (meta-package) | - |
 | `airis-mcp-gateway` | Unified MCP Gateway (25+ servers) | `airis-gateway` |
 | `airis-workspace` | Docker-first monorepo manager | `airis` |
 | `mindbase` | AI conversation knowledge management | `mindbase` |
