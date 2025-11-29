@@ -7,7 +7,7 @@ class AirisAgent < Formula
   head "https://github.com/agiletec-inc/airis-agent.git", branch: "main"
 
   # Python for running the agent and MCP server
-  depends_on "python@3.12"
+  depends_on "python"
   depends_on "uv" # Fast Python package manager
 
   def install
