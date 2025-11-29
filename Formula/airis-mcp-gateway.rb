@@ -10,8 +10,10 @@ class AirisMcpGateway < Formula
   def install
     # Build CLI
     cd "packages/cli" do
-      system "npm", "install", "--ignore-scripts", "--no-audit", "--no-fund"
+      system "npm", "install", "--production=false"
       system "npm", "run", "build"
+      # Remove dev dependencies after build
+      system "npm", "prune", "--production"
     end
 
     # Install CLI preserving directory structure
