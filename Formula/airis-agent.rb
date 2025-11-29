@@ -5,10 +5,6 @@ class AirisAgent < Formula
   sha256 "ffa0069dd2c1093f151b0927eadbaee14d3beb365936837ae82fbe2da8547e7a"
   license "MIT"
 
-  on_arm do
-    depends_on cask: "orbstack"
-  end
-
   def install
     libexec.install Dir["*"]
 

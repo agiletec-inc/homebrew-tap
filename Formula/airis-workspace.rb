@@ -6,21 +6,21 @@ class AirisWorkspace < Formula
   sha256 "b364602591ef9cc69c3beeb423233ada79a3fa80bb5c72cf82bd5e9848a9202a"
   version "1.32.0"
 
-  # OrbStack for Apple Silicon (recommended Docker runtime)
-  on_arm do
-    depends_on cask: "orbstack"
-  end
-  # Intel Mac: User installs Docker manually
-
   def install
     bin.install "airis"
   end
 
   def caveats
     <<~EOS
-      Make sure your Docker backend is running before using airis:
-        - Apple Silicon: OrbStack (installed as dependency)
-        - Intel Mac: Docker Desktop (installed as dependency)
+      AIRIS Workspace installed!
+
+      Prerequisites:
+        - Docker runtime (OrbStack recommended for Apple Silicon)
+
+      Quick Start:
+        airis init     # Initialize project
+        airis up       # Start workspace
+        airis --help   # Show all commands
     EOS
   end
 

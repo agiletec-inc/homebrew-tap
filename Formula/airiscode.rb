@@ -5,10 +5,6 @@ class Airiscode < Formula
   sha256 "461bf7f474a4a0002567947d828130b63d4e7812fca49db5d68caa720d29b911"
   license "MIT"
 
-  on_arm do
-    depends_on cask: "orbstack"
-  end
-
   def install
     libexec.install Dir["*"]
 

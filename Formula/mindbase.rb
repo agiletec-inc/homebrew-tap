@@ -5,10 +5,6 @@ class Mindbase < Formula
   sha256 "dac4d2eb9cdf78accd6f1f1bf5078974b5f38410d0f18867cb4f3f1777c76777"
   license "MIT"
 
-  on_arm do
-    depends_on cask: "orbstack"
-  end
-
   # Ollama runs locally for GPU acceleration (Apple Silicon)
   depends_on "ollama"
 
