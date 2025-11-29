@@ -2,36 +2,137 @@
 
 Official Homebrew tap for [Agiletec Inc.](https://github.com/agiletec-inc) packages.
 
-## Installation
+## Quick Install (All AIRIS Tools)
 
 ```bash
-# Add this tap
 brew tap agiletec-inc/tap
-
-# Install AIRIS MCP Gateway
-brew install airis-mcp-gateway
+brew install airis-mcp-gateway airis-workspace mindbase airiscode airis-agent
 ```
 
 ## Available Formulae
 
+| Formula | Description | Command |
+|---------|-------------|---------|
+| `airis-mcp-gateway` | Unified MCP Gateway (25+ servers) | `airis-gateway` |
+| `airis-workspace` | Docker-first monorepo manager | `airis` |
+| `mindbase` | AI conversation knowledge management | `mindbase` |
+| `airiscode` | Terminal-first autonomous coding runner | `airiscode` |
+| `airis-agent` | Claude Code enhancement framework | `airis-agent` |
+| `mindbase-menubar` | macOS menu bar companion app | GUI App |
+
+---
+
 ### AIRIS MCP Gateway
 
-Unified MCP server management for Claude Code, Claude Desktop, Cursor, Zed, and more.
+Unified MCP server management for Claude Code, Cursor, Zed, and more.
 
-**Install**:
 ```bash
 brew install airis-mcp-gateway
 airis-gateway install
 ```
 
-**Features**:
-- ✅ 25+ MCP servers in one Gateway
-- ✅ Zero-token startup
-- ✅ Multi-editor support
-- ✅ Docker-first architecture
-- ✅ Secure secret management
+**Features**: 25+ MCP servers, zero-token startup, multi-editor support
 
-**Documentation**: https://github.com/agiletec-inc/airis-mcp-gateway
+**Docs**: https://github.com/agiletec-inc/airis-mcp-gateway
+
+---
+
+### AIRIS Workspace
+
+Docker-first monorepo workspace manager for rapid prototyping.
+
+```bash
+brew install airis-workspace
+airis init
+airis up
+```
+
+**Features**: Docker-first, manifest-driven, cross-platform
+
+**Docs**: https://github.com/agiletec-inc/airis-workspace
+
+---
+
+### MindBase
+
+AI conversation knowledge management with PostgreSQL + pgvector + Ollama.
+
+```bash
+brew install mindbase
+mindbase up
+```
+
+**Features**: Vector search, conversation analytics, MCP integration
+
+**Docs**: https://github.com/agiletec-inc/mindbase
+
+---
+
+### AIRIS Code
+
+Terminal-first autonomous coding runner with Claude Code, Codex, Gemini CLI.
+
+```bash
+brew install airiscode
+airiscode up
+airiscode run
+```
+
+**Features**: Multi-assistant orchestration, Super Agent runtime, MindBase memory
+
+**Docs**: https://github.com/agiletec-inc/airiscode
+
+---
+
+### AIRIS Agent
+
+Configuration framework for Claude Code with specialized commands and personas.
+
+```bash
+brew install airis-agent
+airis-agent install-claude
+```
+
+**Features**: Slash commands, cognitive personas, development methodologies
+
+**Docs**: https://github.com/agiletec-inc/airis-agent
+
+---
+
+### MindBase Menubar
+
+macOS menu bar companion app for MindBase with auto-collection and chat.
+
+```bash
+brew install mindbase-menubar
+open /Applications/MindBaseMenubar.app
+```
+
+**Features**: Auto-collection toggle, chat window (qwen2.5:3b), health monitoring
+
+**Docs**: https://github.com/agiletec-inc/mindbase
+
+---
+
+## Prerequisites
+
+All tools require Docker:
+
+```bash
+# Apple Silicon (recommended)
+brew install --cask orbstack
+
+# Intel Mac / Other
+brew install --cask docker
+```
+
+Some tools require Ollama for local AI:
+
+```bash
+brew install ollama
+brew services start ollama
+ollama pull qwen3-embedding:8b  # For MindBase
+```
 
 ---
 
@@ -39,20 +140,26 @@ airis-gateway install
 
 ### Formula not found
 
-Make sure you've tapped the repository:
 ```bash
 brew tap agiletec-inc/tap
+brew update
 ```
 
-### Docker not found
+### Docker not running
 
-AIRIS MCP Gateway requires Docker:
 ```bash
-# Install Docker Desktop
-brew install --cask docker
+# Start OrbStack
+open -a OrbStack
 
-# Or use OrbStack (lighter alternative)
-brew install --cask orbstack
+# Or Docker Desktop
+open -a Docker
+```
+
+### Ollama not running
+
+```bash
+brew services start ollama
+ollama list  # Verify models
 ```
 
 ---
