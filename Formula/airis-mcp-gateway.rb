@@ -16,17 +16,16 @@ class AirisMcpGateway < Formula
 
     # Install CLI files
     libexec.install "packages/cli/dist", "packages/cli/node_modules", "packages/cli/package.json"
-    libexec.install "packages/cli/bin/airis-gateway.js"
 
     # Install scripts for full installation
     (libexec/"scripts").install Dir["scripts/*"]
     libexec.install ".env.example"
 
-    # Create wrapper script
+    # Create wrapper script that runs dist/index.js directly
     (bin/"airis-gateway").write <<~EOS
       #!/bin/bash
       export NODE_PATH="#{libexec}/node_modules"
-      exec "#{Formula["node"].opt_bin}/node" "#{libexec}/airis-gateway.js" "$@"
+      exec "#{Formula["node"].opt_bin}/node" "#{libexec}/dist/index.js" "$@"
     EOS
 
     # Also create airis-mcp alias
