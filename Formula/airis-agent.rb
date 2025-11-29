@@ -1,8 +1,8 @@
 class AirisAgent < Formula
   desc "Configuration framework for Claude Code with specialized commands and personas"
   homepage "https://github.com/agiletec-inc/airis-agent"
-  url "https://github.com/agiletec-inc/airis-agent/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "" # TODO: Calculate after release
+  url "https://github.com/agiletec-inc/airis-agent/archive/refs/tags/v4.1.6.tar.gz"
+  sha256 "ffa0069dd2c1093f151b0927eadbaee14d3beb365936837ae82fbe2da8547e7a"
   license "MIT"
   head "https://github.com/agiletec-inc/airis-agent.git", branch: "main"
 

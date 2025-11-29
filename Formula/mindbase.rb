@@ -2,7 +2,7 @@ class Mindbase < Formula
   desc "AI conversation knowledge management with PostgreSQL + pgvector + Ollama"
   homepage "https://github.com/agiletec-inc/mindbase"
   url "https://github.com/agiletec-inc/mindbase/archive/refs/tags/v1.1.0.tar.gz"
-  sha256 "" # TODO: Calculate after release
+  sha256 "dac4d2eb9cdf78accd6f1f1bf5078974b5f38410d0f18867cb4f3f1777c76777"
   license "MIT"
   head "https://github.com/agiletec-inc/mindbase.git", branch: "main"
 

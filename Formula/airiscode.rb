@@ -2,7 +2,7 @@ class Airiscode < Formula
   desc "Terminal-first autonomous coding runner with Claude Code, Codex, Gemini CLI"
   homepage "https://github.com/agiletec-inc/airiscode"
   url "https://github.com/agiletec-inc/airiscode/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "" # TODO: Calculate after release
+  sha256 "461bf7f474a4a0002567947d828130b63d4e7812fca49db5d68caa720d29b911"
   license "MIT"
   head "https://github.com/agiletec-inc/airiscode.git", branch: "main"
 
