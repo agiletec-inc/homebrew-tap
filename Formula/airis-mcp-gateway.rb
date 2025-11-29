@@ -14,16 +14,13 @@ class AirisMcpGateway < Formula
       system "npm", "run", "build"
     end
 
-    # Install CLI to libexec
-    libexec.install "packages/cli/dist"
-    libexec.install "packages/cli/node_modules"
-    libexec.install "packages/cli/package.json"
-    libexec.install "packages/cli/bin/airis-gateway.js"
+    # Install CLI preserving directory structure
+    (libexec/"packages/cli").install Dir["packages/cli/*"]
 
     # Create wrapper script
     (bin/"airis-gateway").write <<~EOS
       #!/bin/bash
-      exec "#{Formula["node@20"].opt_bin}/node" "#{libexec}/airis-gateway.js" "$@"
+      exec "#{Formula["node@20"].opt_bin}/node" "#{libexec}/packages/cli/bin/airis-gateway.js" "$@"
     EOS
 
     bin.install_symlink "airis-gateway" => "airis-mcp"

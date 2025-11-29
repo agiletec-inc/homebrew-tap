@@ -8,58 +8,105 @@ class AirisCode < Formula
   def install
     libexec.install Dir["*"]
 
+    # Main CLI command (mirrors actual airis CLI)
     (bin/"airis-code").write <<~EOS
       #!/bin/bash
       set -e
       AIRIS_CODE_DIR="#{libexec}"
-      cd "$AIRIS_CODE_DIR"
+
+      # Ensure workspace is running
+      ensure_running() {
+        if ! docker compose -f "$AIRIS_CODE_DIR/docker-compose.yml" ps --status running 2>/dev/null | grep -q workspace; then
+          echo "🚀 Starting AIRIS Code workspace..."
+          docker compose -f "$AIRIS_CODE_DIR/docker-compose.yml" up -d
+          sleep 2
+        fi
+      }
+
+      # Execute CLI command inside container
+      run_cli() {
+        ensure_running
+        docker compose -f "$AIRIS_CODE_DIR/docker-compose.yml" exec -T workspace \\
+          pnpm --filter @airiscode/cli start "$@"
+      }
 
       case "$1" in
+        # Workspace management
         up|start)
-          docker compose up -d
+          docker compose -f "$AIRIS_CODE_DIR/docker-compose.yml" up -d
           echo "✅ AIRIS Code workspace running"
           ;;
         down|stop)
-          docker compose down
-          ;;
-        run)
-          shift
-          docker compose exec workspace pnpm --filter @airis-code/cli start "$@"
+          docker compose -f "$AIRIS_CODE_DIR/docker-compose.yml" down
           ;;
         logs)
-          docker compose logs -f "${@:2}"
-          ;;
-        status|ps)
-          docker compose ps
-          ;;
-        exec)
           shift
-          docker compose exec workspace "$@"
+          docker compose -f "$AIRIS_CODE_DIR/docker-compose.yml" logs -f "$@"
+          ;;
+        ps|status)
+          docker compose -f "$AIRIS_CODE_DIR/docker-compose.yml" ps
           ;;
         shell)
-          docker compose exec workspace sh
+          ensure_running
+          docker compose -f "$AIRIS_CODE_DIR/docker-compose.yml" exec workspace sh
           ;;
         build)
-          docker compose exec workspace pnpm build
+          ensure_running
+          docker compose -f "$AIRIS_CODE_DIR/docker-compose.yml" exec workspace pnpm build
           ;;
-        version)
+
+        # CLI commands (pass through to airis CLI)
+        code)
+          shift
+          run_cli code "$@"
+          ;;
+        chat)
+          shift
+          run_cli chat "$@"
+          ;;
+        config)
+          shift
+          run_cli config "$@"
+          ;;
+        session)
+          shift
+          run_cli session "$@"
+          ;;
+
+        # Version
+        -v|--version|version)
           echo "AIRIS Code v#{version}"
           ;;
-        *)
+
+        # Help
+        -h|--help|help|"")
           echo "AIRIS Code - Terminal-first Autonomous Coding Runner"
           echo ""
-          echo "Usage: airis-code <command> [args]"
+          echo "Usage: airis-code [command] [options]"
           echo ""
-          echo "Commands:"
-          echo "  up, start   Start workspace"
-          echo "  down, stop  Stop workspace"
-          echo "  run [args]  Run autonomous coding session"
-          echo "  logs        View logs"
-          echo "  status, ps  Show status"
-          echo "  exec <cmd>  Execute command in workspace"
-          echo "  shell       Open shell"
-          echo "  build       Build project"
-          echo "  version     Show version"
+          echo "CLI Commands:"
+          echo "  <task>         Execute task (shorthand for 'code <task>')"
+          echo "  code <task>    Execute coding task"
+          echo "  chat           Interactive chat mode"
+          echo "  config         Configuration management"
+          echo "  session        Session management"
+          echo ""
+          echo "Workspace Commands:"
+          echo "  up, start      Start workspace container"
+          echo "  down, stop     Stop workspace container"
+          echo "  logs           View container logs"
+          echo "  ps, status     Show container status"
+          echo "  shell          Open shell in container"
+          echo "  build          Build project"
+          echo ""
+          echo "Options:"
+          echo "  -v, --version  Show version"
+          echo "  -h, --help     Show this help"
+          ;;
+
+        # Default: treat as task (shorthand for 'code <task>')
+        *)
+          run_cli "$@"
           ;;
       esac
     EOS
@@ -74,9 +121,15 @@ class AirisCode < Formula
         - Docker runtime (OrbStack recommended)
 
       Quick Start:
-        airis-code up    # Start workspace
-        airis-code run   # Run autonomous coding
-        airis-code down  # Stop workspace
+        airis-code up              # Start workspace
+        airis-code "fix the bug"   # Run task
+        airis-code chat            # Interactive mode
+        airis-code down            # Stop workspace
+
+      CLI Commands:
+        airis-code code <task>     # Execute coding task
+        airis-code config          # Configuration
+        airis-code session         # Session management
     EOS
   end
 
