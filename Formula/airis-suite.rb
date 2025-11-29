@@ -9,7 +9,7 @@ class AirisSuite < Formula
   depends_on "agiletec-inc/tap/airis-mcp-gateway"  # MCP server hub
   depends_on "agiletec-inc/tap/airis-workspace"    # Monorepo manager
   depends_on "agiletec-inc/tap/mindbase"           # Cross-session memory
-  depends_on "agiletec-inc/tap/airiscode"          # Autonomous coding runner
+  depends_on "agiletec-inc/tap/airis-code"         # Autonomous coding runner
   depends_on "agiletec-inc/tap/airis-agent"        # Claude Code enhancement
 
   def install
@@ -22,7 +22,7 @@ class AirisSuite < Formula
       - airis-mcp-gateway: Unified MCP server management
       - airis-workspace: Docker-first monorepo manager
       - mindbase: Cross-session memory with semantic search
-      - airiscode: Terminal-first autonomous coding runner
+      - airis-code: Terminal-first autonomous coding runner
       - airis-agent: Claude Code enhancement framework
     EOS
   end
@@ -35,7 +35,7 @@ class AirisSuite < Formula
         - airis-mcp-gateway  (MCP server hub with 90% token reduction)
         - airis-workspace    (Docker-first monorepo manager)
         - mindbase           (AI conversation knowledge management)
-        - airiscode          (Terminal-first autonomous coding runner)
+        - airis-code         (Terminal-first autonomous coding runner)
         - airis-agent        (Claude Code enhancement framework)
 
       Quick Start:
@@ -48,7 +48,7 @@ class AirisSuite < Formula
         airis-gateway --help
         airis --help
         mindbase --help
-        airiscode --help
+        airis-code --help
         airis-agent --help
 
       Access URLs:

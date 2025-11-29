@@ -1,18 +1,18 @@
-class Airiscode < Formula
+class AirisCode < Formula
   desc "Terminal-first autonomous coding runner with Claude Code, Codex, Gemini CLI"
-  homepage "https://github.com/agiletec-inc/airiscode"
-  url "https://github.com/agiletec-inc/airiscode/archive/refs/tags/v0.1.0.tar.gz"
+  homepage "https://github.com/agiletec-inc/airis-code"
+  url "https://github.com/agiletec-inc/airis-code/archive/refs/tags/v0.1.0.tar.gz"
   sha256 "461bf7f474a4a0002567947d828130b63d4e7812fca49db5d68caa720d29b911"
   license "MIT"
 
   def install
     libexec.install Dir["*"]
 
-    (bin/"airiscode").write <<~EOS
+    (bin/"airis-code").write <<~EOS
       #!/bin/bash
       set -e
-      AIRISCODE_DIR="#{libexec}"
-      cd "$AIRISCODE_DIR"
+      AIRIS_CODE_DIR="#{libexec}"
+      cd "$AIRIS_CODE_DIR"
 
       case "$1" in
         up|start)
@@ -24,7 +24,7 @@ class Airiscode < Formula
           ;;
         run)
           shift
-          docker compose exec workspace pnpm --filter @airiscode/cli start "$@"
+          docker compose exec workspace pnpm --filter @airis-code/cli start "$@"
           ;;
         logs)
           docker compose logs -f "${@:2}"
@@ -48,7 +48,7 @@ class Airiscode < Formula
         *)
           echo "AIRIS Code - Terminal-first Autonomous Coding Runner"
           echo ""
-          echo "Usage: airiscode <command> [args]"
+          echo "Usage: airis-code <command> [args]"
           echo ""
           echo "Commands:"
           echo "  up, start   Start workspace"
@@ -63,7 +63,7 @@ class Airiscode < Formula
           ;;
       esac
     EOS
-    chmod 0755, bin/"airiscode"
+    chmod 0755, bin/"airis-code"
   end
 
   def caveats
@@ -74,13 +74,13 @@ class Airiscode < Formula
         - Docker runtime (OrbStack recommended)
 
       Quick Start:
-        airiscode up    # Start workspace
-        airiscode run   # Run autonomous coding
-        airiscode down  # Stop workspace
+        airis-code up    # Start workspace
+        airis-code run   # Run autonomous coding
+        airis-code down  # Stop workspace
     EOS
   end
 
   test do
-    assert_match "AIRIS Code", shell_output("#{bin}/airiscode version")
+    assert_match "AIRIS Code", shell_output("#{bin}/airis-code version")
   end
 end
