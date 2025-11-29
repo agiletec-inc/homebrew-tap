@@ -6,9 +6,11 @@ class AirisSuite < Formula
   license "MIT"
 
   # Core AIRIS tools
-  depends_on "agiletec/tap/airis-mcp-gateway"  # MCP server hub
-  depends_on "agiletec/tap/airis-workspace"    # Monorepo manager
-  depends_on "agiletec/tap/mindbase"           # Cross-session memory
+  depends_on "agiletec-inc/tap/airis-mcp-gateway"  # MCP server hub
+  depends_on "agiletec-inc/tap/airis-workspace"    # Monorepo manager
+  depends_on "agiletec-inc/tap/mindbase"           # Cross-session memory
+  depends_on "agiletec-inc/tap/airiscode"          # Autonomous coding runner
+  depends_on "agiletec-inc/tap/airis-agent"        # Claude Code enhancement
 
   def install
     # Meta-package - just creates a marker file
@@ -20,6 +22,8 @@ class AirisSuite < Formula
       - airis-mcp-gateway: Unified MCP server management
       - airis-workspace: Docker-first monorepo manager
       - mindbase: Cross-session memory with semantic search
+      - airiscode: Terminal-first autonomous coding runner
+      - airis-agent: Claude Code enhancement framework
     EOS
   end
 
@@ -30,24 +34,27 @@ class AirisSuite < Formula
       Components installed:
         - airis-mcp-gateway  (MCP server hub with 90% token reduction)
         - airis-workspace    (Docker-first monorepo manager)
-        - mindbase           (Cross-session memory)
+        - mindbase           (AI conversation knowledge management)
+        - airiscode          (Terminal-first autonomous coding runner)
+        - airis-agent        (Claude Code enhancement framework)
 
       Quick Start:
-        # Setup MCP Gateway
-        airis-gateway install
-        airis-gateway start
-
-        # Or auto-start on login
-        brew services start airis-mcp-gateway
+        # Setup everything
+        airis-gateway install   # Register with IDEs
+        mindbase up             # Start MindBase services
+        airis-agent install-claude  # Install Claude Code commands
 
       Individual component help:
         airis-gateway --help
         airis --help
         mindbase --help
+        airiscode --help
+        airis-agent --help
 
       Access URLs:
-        MCP Gateway:  http://gateway.localhost:9390
-        Settings UI:  http://ui.gateway.localhost:5273
+        MCP Gateway:  http://localhost:9390
+        Settings UI:  http://localhost:5273
+        MindBase:     http://localhost:18003
     EOS
   end
 
