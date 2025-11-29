@@ -6,14 +6,11 @@ class AirisWorkspace < Formula
   sha256 "b364602591ef9cc69c3beeb423233ada79a3fa80bb5c72cf82bd5e9848a9202a"
   version "1.32.0"
 
-  # Docker backend is required - this is a Docker-first tool
+  # OrbStack for Apple Silicon (recommended Docker runtime)
   on_arm do
     depends_on cask: "orbstack"
   end
-
-  on_intel do
-    depends_on cask: "docker"
-  end
+  # Intel Mac: User installs Docker manually
 
   def install
     bin.install "airis"

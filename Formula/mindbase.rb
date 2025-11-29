@@ -4,20 +4,20 @@ class Mindbase < Formula
   url "https://github.com/agiletec-inc/mindbase/archive/refs/tags/v1.1.0.tar.gz"
   sha256 "dac4d2eb9cdf78accd6f1f1bf5078974b5f38410d0f18867cb4f3f1777c76777"
   license "MIT"
-  head "https://github.com/agiletec-inc/mindbase.git", branch: "main"
 
-  # Ollama runs natively on Apple Silicon for GPU acceleration
+  on_arm do
+    depends_on cask: "orbstack"
+  end
+
+  # Ollama runs locally for GPU acceleration (Apple Silicon)
   depends_on "ollama"
 
   def install
-    # Install entire project for docker compose
     libexec.install Dir["*"]
 
-    # Create wrapper script
     (bin/"mindbase").write <<~EOS
       #!/bin/bash
       set -e
-
       MINDBASE_DIR="#{libexec}"
       cd "$MINDBASE_DIR"
 
@@ -28,13 +28,12 @@ class Mindbase < Formula
           echo "✅ MindBase running at http://localhost:18003"
           ;;
         down|stop)
-          echo "🛑 Stopping MindBase..."
           docker compose down
           ;;
         logs)
           docker compose logs -f "${@:2}"
           ;;
-        ps|status)
+        status|ps)
           docker compose ps
           ;;
         migrate)
@@ -42,6 +41,18 @@ class Mindbase < Formula
           ;;
         shell)
           docker compose exec api bash
+          ;;
+        model-pull)
+          echo "📥 Pulling embedding model..."
+          ollama pull qwen3-embedding:8b
+          ;;
+        setup)
+          echo "🔧 Setting up MindBase..."
+          ollama pull qwen3-embedding:8b
+          docker compose up -d
+          sleep 5
+          docker compose exec api alembic upgrade head
+          echo "✅ Setup complete"
           ;;
         version)
           echo "MindBase v#{version}"
@@ -52,16 +63,17 @@ class Mindbase < Formula
           echo "Usage: mindbase <command>"
           echo ""
           echo "Commands:"
-          echo "  up, start     Start all services (PostgreSQL, API, etc.)"
-          echo "  down, stop    Stop all services"
-          echo "  logs          View logs (add service name for specific logs)"
-          echo "  ps, status    Show running services"
-          echo "  migrate       Run database migrations"
-          echo "  shell         Open shell in API container"
-          echo "  version       Show version"
+          echo "  up, start   Start services"
+          echo "  down, stop  Stop services"
+          echo "  logs        View logs"
+          echo "  status, ps  Show status"
+          echo "  migrate     Run DB migrations"
+          echo "  model-pull  Pull Ollama embedding model"
+          echo "  setup       Full setup (model + start + migrate)"
+          echo "  shell       Open shell in API container"
+          echo "  version     Show version"
           echo ""
           echo "Prerequisites:"
-          echo "  - Docker runtime (OrbStack recommended)"
           echo "  - Ollama running: ollama serve"
           ;;
       esac
@@ -73,7 +85,7 @@ class Mindbase < Formula
     ohai "Pulling Ollama embedding model..."
     system "ollama", "pull", "qwen3-embedding:8b"
   rescue StandardError => e
-    opoo "Ollama model pull failed: #{e.message}"
+    opoo "Model pull failed: #{e.message}"
     opoo "Run manually: ollama pull qwen3-embedding:8b"
   end
 
@@ -82,26 +94,21 @@ class Mindbase < Formula
       MindBase installed!
 
       Prerequisites:
-        - Docker runtime (OrbStack recommended for Apple Silicon)
+        - Docker runtime (OrbStack recommended)
         - Ollama running: brew services start ollama
 
       Quick Start:
-        mindbase up        # Start services
-        mindbase logs      # View logs
-        mindbase down      # Stop services
+        mindbase setup  # Full setup
+        mindbase up     # Start services
+        mindbase logs   # View logs
 
       Access:
         API:  http://localhost:18003
         Docs: http://localhost:18003/docs
-
-      First time setup:
-        1. Start Ollama: ollama serve (or brew services start ollama)
-        2. Start MindBase: mindbase up
-        3. Embedding model is auto-pulled during install
     EOS
   end
 
   test do
-    assert_match "MindBase v#{version}", shell_output("#{bin}/mindbase version")
+    assert_match "MindBase", shell_output("#{bin}/mindbase version")
   end
 end

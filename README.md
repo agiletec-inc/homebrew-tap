@@ -2,17 +2,39 @@
 
 Official Homebrew tap for [Agiletec Inc.](https://github.com/agiletec-inc) packages.
 
-## Quick Install (All AIRIS Tools)
+## Quick Install
+
+### macOS (Apple Silicon)
 
 ```bash
 brew tap agiletec-inc/tap
-
-# Install everything at once
 brew install airis-suite
-
-# Or install individually
-brew install airis-mcp-gateway airis-workspace mindbase airiscode airis-agent
 ```
+
+### macOS (Intel)
+
+```bash
+brew tap agiletec-inc/tap
+brew install airis-suite
+# Note: Install Docker manually (OrbStack or Docker Desktop)
+```
+
+### Linux / WSL2
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/agiletec-inc/airis-mcp-gateway/main/scripts/install-suite.sh | bash
+```
+
+### Windows
+
+Use WSL2 (recommended) or Docker Compose directly:
+```powershell
+git clone https://github.com/agiletec-inc/airis-mcp-gateway
+cd airis-mcp-gateway
+docker compose up -d
+```
+
+---
 
 ## Available Formulae
 
@@ -28,6 +50,8 @@ brew install airis-mcp-gateway airis-workspace mindbase airiscode airis-agent
 
 ---
 
+## Components
+
 ### AIRIS MCP Gateway
 
 Unified MCP server management for Claude Code, Cursor, Zed, and more.
@@ -37,107 +61,62 @@ brew install airis-mcp-gateway
 airis-gateway install
 ```
 
-**Features**: 25+ MCP servers, zero-token startup, multi-editor support
-
-**Docs**: https://github.com/agiletec-inc/airis-mcp-gateway
-
----
-
 ### AIRIS Workspace
 
-Docker-first monorepo workspace manager for rapid prototyping.
+Docker-first monorepo workspace manager.
 
 ```bash
 brew install airis-workspace
-airis init
-airis up
+airis init && airis up
 ```
-
-**Features**: Docker-first, manifest-driven, cross-platform
-
-**Docs**: https://github.com/agiletec-inc/airis-workspace
-
----
 
 ### MindBase
 
-AI conversation knowledge management with PostgreSQL + pgvector + Ollama.
+AI conversation knowledge management with vector search.
 
 ```bash
 brew install mindbase
-mindbase up
+mindbase setup
 ```
-
-**Features**: Vector search, conversation analytics, MCP integration
-
-**Docs**: https://github.com/agiletec-inc/mindbase
-
----
 
 ### AIRIS Code
 
-Terminal-first autonomous coding runner with Claude Code, Codex, Gemini CLI.
+Terminal-first autonomous coding runner.
 
 ```bash
 brew install airiscode
-airiscode up
-airiscode run
+airiscode up && airiscode run
 ```
-
-**Features**: Multi-assistant orchestration, Super Agent runtime, MindBase memory
-
-**Docs**: https://github.com/agiletec-inc/airiscode
-
----
 
 ### AIRIS Agent
 
-Configuration framework for Claude Code with specialized commands and personas.
+Claude Code enhancement framework.
 
 ```bash
 brew install airis-agent
 airis-agent install-claude
 ```
 
-**Features**: Slash commands, cognitive personas, development methodologies
-
-**Docs**: https://github.com/agiletec-inc/airis-agent
-
----
-
-### MindBase Menubar
-
-macOS menu bar companion app for MindBase with auto-collection and chat.
-
-```bash
-brew install mindbase-menubar
-open /Applications/MindBaseMenubar.app
-```
-
-**Features**: Auto-collection toggle, chat window (qwen2.5:3b), health monitoring
-
-**Docs**: https://github.com/agiletec-inc/mindbase
-
 ---
 
 ## Prerequisites
 
-All tools require Docker:
+### Apple Silicon Mac
 
-```bash
-# Apple Silicon (recommended)
-brew install --cask orbstack
+OrbStack is automatically installed as a dependency.
 
-# Intel Mac / Other
-brew install --cask docker
-```
+### Intel Mac / Linux
 
-Some tools require Ollama for local AI:
+Install Docker manually:
+- **Intel Mac**: [Docker Desktop](https://docs.docker.com/desktop/install/mac-install/) or [OrbStack](https://orbstack.dev/)
+- **Linux**: [Docker Engine](https://docs.docker.com/engine/install/)
 
+### Ollama (for MindBase)
+
+MindBase requires Ollama for local AI inference:
 ```bash
 brew install ollama
 brew services start ollama
-ollama pull qwen3-embedding:8b  # For MindBase
 ```
 
 ---
@@ -154,18 +133,11 @@ brew update
 ### Docker not running
 
 ```bash
-# Start OrbStack
+# OrbStack
 open -a OrbStack
 
-# Or Docker Desktop
+# Docker Desktop
 open -a Docker
-```
-
-### Ollama not running
-
-```bash
-brew services start ollama
-ollama list  # Verify models
 ```
 
 ---

@@ -5,6 +5,11 @@ class AirisMcpGateway < Formula
   sha256 "6b6b4a690a0f5e86aaff7d77b971c54a39b6f852763775fb693840ae3602765f"
   license "MIT"
 
+  # OrbStack for Apple Silicon (recommended Docker runtime)
+  on_arm do
+    depends_on cask: "orbstack"
+  end
+
   def install
     # Install project files for docker compose
     libexec.install Dir["*"]
