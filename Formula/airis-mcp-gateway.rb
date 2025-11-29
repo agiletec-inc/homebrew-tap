@@ -1,64 +1,65 @@
 class AirisMcpGateway < Formula
-  desc "Unified MCP server management for Claude Code, Cursor, Zed, and more"
+  desc "Unified MCP server management with 90% token reduction via lazy loading"
   homepage "https://github.com/agiletec-inc/airis-mcp-gateway"
-  url "https://github.com/agiletec-inc/airis-mcp-gateway/releases/download/v1.4.4/airis-mcp-gateway-1.4.4-universal.tar.gz"
-  sha256 "e64f1ff1fba58b7b5b2816e507bc154afb91468746772cd3a591d65712b06251"
+  url "https://github.com/agiletec-inc/airis-mcp-gateway/archive/refs/tags/v1.5.0.tar.gz"
+  sha256 "6b6b4a690a0f5e86aaff7d77b971c54a39b6f852763775fb693840ae3602765f"
   license "MIT"
 
-  depends_on "node"
-
-  # Note: Requires Docker-compatible runtime (OrbStack, Docker Desktop, Colima, etc.)
-  # Not enforced as dependency to allow flexibility in runtime choice
+  depends_on "docker"
+  depends_on "python@3.11"
 
   def install
-    # Pre-built tarball includes: bin, dist, node_modules, scripts
-    # No pnpm install or build needed - just copy files
-
-    # Install CLI files
+    # Install entire project structure
     prefix.install Dir["*"]
 
-    # Create symlink for CLI
-    bin.install_symlink prefix/"bin/airis-gateway.js" => "airis-gateway"
-    bin.install_symlink prefix/"bin/airis-gateway.js" => "airis-mcp"
+    # Create wrapper script
+    (bin/"airis-gateway").write <<~EOS
+      #!/bin/bash
+      cd "#{prefix}" && just "$@"
+    EOS
+
+    chmod 0755, bin/"airis-gateway"
   end
 
   def post_install
-    # Auto-import existing IDE MCP configurations
-    ohai "Importing existing IDE MCP configurations..."
-    system "python3", prefix/"scripts/import_existing_configs.py"
-  rescue StandardError => e
-    opoo "IDE config import failed: #{e.message}"
-    opoo "You can manually import later with: airis-gateway install"
+    ohai "Setting up AIRIS MCP Gateway..."
+
+    # Create data directory
+    (var/"airis-mcp-gateway").mkpath
+
+    # Auto-import existing IDE configs
+    system "python3", prefix/"scripts/import_existing_configs.py" rescue nil
   end
 
   def caveats
     <<~EOS
       AIRIS MCP Gateway has been installed!
 
-      ✨ Your existing IDE MCP configurations have been automatically imported!
+      📋 Quick Start:
+        1. Ensure Docker is running
+        2. Run: cd #{prefix} && just init
+        3. Restart your editors (Claude Code, Cursor, Zed, etc.)
 
-      Prerequisites:
-        - Docker-compatible runtime required (OrbStack, Docker Desktop, Colima, etc.)
-        - Ensure your Docker runtime is running before starting
+      🔧 Commands:
+        just init       # Full installation (build + start + register editors)
+        just up         # Start services
+        just down       # Stop services
+        just logs       # View logs
+        just dev-next settings   # Start UI dev server
 
-      Quick Start:
-        1. Run: airis-gateway install
-        2. Restart your editors (Claude Code, Cursor, Zed, etc.)
+      📚 Documentation:
+        #{prefix}/CLAUDE.md          # Full guide
+        #{prefix}/PROJECT_INDEX.md   # Repository structure
 
-      What was imported:
-        - Claude Desktop, Cursor, Windsurf, Zed configs (if installed)
-        - All MCP servers merged into unified Gateway
-
-      Access URLs:
+      🌐 Access URLs:
         Gateway:     http://localhost:9390
-        Settings UI: http://localhost:5273
-        API Docs:    http://localhost:9400/docs
-
-      Documentation: https://github.com/agiletec-inc/airis-mcp-gateway
+        Settings UI: http://ui.gateway.localhost:5273
+        API:         http://api.gateway.localhost:9400
     EOS
   end
 
   test do
-    system "#{bin}/airis-gateway", "--version"
+    system "test", "-f", prefix/"justfile"
+    system "test", "-f", prefix/"docker-compose.yml"
   end
 end
