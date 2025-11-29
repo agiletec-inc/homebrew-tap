@@ -52,11 +52,23 @@ class AirisMcpGateway < Formula
         install)
           echo "🚀 Installing AIRIS MCP Gateway..."
 
-          # Setup .env
+          # Setup root .env
           if [[ ! -f .env ]] && [[ -f .env.example ]]; then
             cp .env.example .env
             echo "✅ .env created"
           fi
+
+          # Create required .env files for services
+          for dir in tools/measurement tests apps/settings apps/api servers/mindbase servers/airis-mcp-gateway-control; do
+            if [[ -d "$dir" ]] && [[ ! -f "$dir/.env" ]]; then
+              if [[ -f "$dir/.env.example" ]]; then
+                cp "$dir/.env.example" "$dir/.env"
+              else
+                touch "$dir/.env"
+              fi
+            fi
+          done
+          echo "✅ Service .env files created"
 
           # Start Docker and containers
           ensure_docker
