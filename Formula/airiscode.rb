@@ -6,7 +6,7 @@ class Airiscode < Formula
   license "MIT"
   head "https://github.com/agiletec-inc/airiscode.git", branch: "main"
 
-  depends_on "node@22"
+  depends_on "node@24"
 
   def install
     # Install entire project for docker compose
