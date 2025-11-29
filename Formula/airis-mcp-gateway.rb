@@ -5,79 +5,98 @@ class AirisMcpGateway < Formula
   sha256 "6b6b4a690a0f5e86aaff7d77b971c54a39b6f852763775fb693840ae3602765f"
   license "MIT"
 
-  depends_on "node"
-  depends_on "pnpm"
+  # OrbStack for Apple Silicon (recommended Docker runtime)
+  on_arm do
+    depends_on cask: "orbstack"
+  end
 
   def install
-    # Use pnpm to install and build CLI
-    system "pnpm", "install", "--frozen-lockfile"
-    system "pnpm", "--filter", "@agiletec/airis-mcp-gateway", "build"
+    # Install project files for docker compose
+    libexec.install Dir["*"]
 
-    # Install CLI files - pnpm creates node_modules in packages/cli
-    libexec.install "packages/cli/dist"
-    libexec.install "packages/cli/node_modules" if File.exist?("packages/cli/node_modules")
-    libexec.install "packages/cli/package.json"
-
-    # Also install shared node_modules for hoisted packages
-    libexec.install "node_modules"
-
-    # Install scripts for full installation
-    (libexec/"scripts").install Dir["scripts/*"]
-    libexec.install ".env.example"
-
-    # Create wrapper script that runs dist/index.js directly
+    # Create CLI wrapper
     (bin/"airis-gateway").write <<~EOS
       #!/bin/bash
-      export NODE_PATH="#{libexec}/node_modules"
-      exec "#{Formula["node"].opt_bin}/node" "#{libexec}/dist/index.js" "$@"
+      set -e
+      GATEWAY_DIR="#{libexec}"
+      cd "$GATEWAY_DIR"
+
+      case "$1" in
+        install)
+          echo "🚀 Installing AIRIS MCP Gateway..."
+          if [[ ! -f .env ]] && [[ -f .env.example ]]; then
+            cp .env.example .env
+            echo "✅ .env created"
+          fi
+          docker compose up -d
+          echo "✅ Gateway running"
+          echo ""
+          echo "Register with your IDE:"
+          python3 scripts/install_all_editors.py 2>/dev/null || echo "Run manually: python3 $GATEWAY_DIR/scripts/install_all_editors.py"
+          ;;
+        start|up)
+          docker compose up -d
+          ;;
+        stop|down)
+          docker compose down
+          ;;
+        restart)
+          docker compose restart
+          ;;
+        logs)
+          docker compose logs -f "${@:2}"
+          ;;
+        status|ps)
+          docker compose ps
+          ;;
+        update)
+          git -C "$GATEWAY_DIR" pull --rebase
+          docker compose up -d --build
+          ;;
+        version)
+          echo "AIRIS MCP Gateway v#{version}"
+          ;;
+        *)
+          echo "AIRIS MCP Gateway - Unified MCP server management"
+          echo ""
+          echo "Usage: airis-gateway <command>"
+          echo ""
+          echo "Commands:"
+          echo "  install     Setup and start Gateway"
+          echo "  start, up   Start services"
+          echo "  stop, down  Stop services"
+          echo "  restart     Restart services"
+          echo "  logs        View logs"
+          echo "  status, ps  Show service status"
+          echo "  update      Update and rebuild"
+          echo "  version     Show version"
+          ;;
+      esac
     EOS
+    chmod 0755, bin/"airis-gateway"
 
-    # Also create airis-mcp alias
     bin.install_symlink "airis-gateway" => "airis-mcp"
-  end
-
-  # brew services support - runs on macOS startup
-  service do
-    run [opt_bin/"airis-gateway", "start"]
-    keep_alive false
-    log_path var/"log/airis-mcp-gateway.log"
-    error_log_path var/"log/airis-mcp-gateway.log"
-    working_dir var/"airis-mcp-gateway"
-  end
-
-  def post_install
-    # Create working directory
-    (var/"airis-mcp-gateway").mkpath
-    (var/"log").mkpath
   end
 
   def caveats
     <<~EOS
-      AIRIS MCP Gateway has been installed!
+      AIRIS MCP Gateway installed!
+
+      Prerequisites:
+        - Docker runtime (OrbStack recommended for Apple Silicon)
 
       Quick Start:
-        airis-gateway install   # Clone repo, setup Docker, register IDEs
-        airis-gateway start     # Start Gateway (auto-starts Docker)
-
-      Auto-start on login:
-        brew services start airis-mcp-gateway
-
-      Commands:
-        airis-gateway install   # Full installation
-        airis-gateway start     # Start containers (auto-starts Docker)
-        airis-gateway stop      # Stop containers
-        airis-gateway status    # Show container status
-        airis-gateway logs -f   # Follow logs
-        airis-gateway update    # Update to latest version
+        airis-gateway install   # Setup and start
+        airis-gateway logs      # View logs
 
       Access URLs:
-        Gateway:     http://gateway.localhost:9390
-        Settings UI: http://ui.gateway.localhost:5273
-        API:         http://api.gateway.localhost:9400
+        Gateway:     http://localhost:9390
+        Settings UI: http://localhost:5273
+        API:         http://localhost:9400
     EOS
   end
 
   test do
-    assert_match "airis-gateway", shell_output("#{bin}/airis-gateway --help")
+    assert_match "AIRIS MCP Gateway", shell_output("#{bin}/airis-gateway version")
   end
 end
