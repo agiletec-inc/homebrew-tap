@@ -6,16 +6,20 @@ class AirisMcpGateway < Formula
   license "MIT"
 
   depends_on "node"
+  depends_on "pnpm"
 
   def install
-    # Install CLI package with dev dependencies for TypeScript build
-    cd "packages/cli" do
-      system "npm", "install"
-      system "npx", "tsc"
-    end
+    # Use pnpm to install and build CLI
+    system "pnpm", "install", "--frozen-lockfile"
+    system "pnpm", "--filter", "@agiletec/airis-mcp-gateway", "build"
 
-    # Install CLI files
-    libexec.install "packages/cli/dist", "packages/cli/node_modules", "packages/cli/package.json"
+    # Install CLI files - pnpm creates node_modules in packages/cli
+    libexec.install "packages/cli/dist"
+    libexec.install "packages/cli/node_modules" if File.exist?("packages/cli/node_modules")
+    libexec.install "packages/cli/package.json"
+
+    # Also install shared node_modules for hoisted packages
+    libexec.install "node_modules"
 
     # Install scripts for full installation
     (libexec/"scripts").install Dir["scripts/*"]
