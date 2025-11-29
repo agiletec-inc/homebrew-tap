@@ -6,21 +6,18 @@ class AirisMcpGateway < Formula
   license "MIT"
 
   depends_on "node@20"
+  depends_on "pnpm"
 
   def install
-    # Build CLI in packages/cli directory
+    # Install and build using pnpm (required for workspace)
+    system "pnpm", "install", "--frozen-lockfile"
+    system "pnpm", "--filter", "@agiletec/airis-mcp-gateway", "build"
+
+    # Deploy CLI with production dependencies
     cli_dir = buildpath/"packages/cli"
     cd cli_dir do
-      system "npm", "install"
-      system "npm", "run", "build"
-      system "npm", "prune", "--production"
+      system "pnpm", "deploy", "--prod", libexec
     end
-
-    # Install CLI to libexec
-    libexec.install cli_dir/"dist"
-    libexec.install cli_dir/"node_modules"
-    libexec.install cli_dir/"package.json"
-    (libexec/"bin").install cli_dir/"bin/airis-gateway.js"
 
     # Create wrapper script
     (bin/"airis-gateway").write <<~EOS
