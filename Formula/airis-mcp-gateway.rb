@@ -8,10 +8,10 @@ class AirisMcpGateway < Formula
   depends_on "node@20"
 
   def install
-    # Install CLI package
+    # Install CLI package with dev dependencies for TypeScript build
     cd "packages/cli" do
-      system "npm", "install", "--production"
-      system "npm", "run", "build"
+      system "npm", "install"
+      system "npx", "tsc"
     end
 
     # Install CLI files
