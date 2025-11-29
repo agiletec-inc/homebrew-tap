@@ -5,7 +5,7 @@ class AirisMcpGateway < Formula
   sha256 "6b6b4a690a0f5e86aaff7d77b971c54a39b6f852763775fb693840ae3602765f"
   license "MIT"
 
-  depends_on "node@24"
+  depends_on "node"
 
   def install
     # Install CLI package with dev dependencies for TypeScript build
@@ -26,7 +26,7 @@ class AirisMcpGateway < Formula
     (bin/"airis-gateway").write <<~EOS
       #!/bin/bash
       export NODE_PATH="#{libexec}/node_modules"
-      exec "#{Formula["node@24"].opt_bin}/node" "#{libexec}/airis-gateway.js" "$@"
+      exec "#{Formula["node"].opt_bin}/node" "#{libexec}/airis-gateway.js" "$@"
     EOS
 
     # Also create airis-mcp alias
