@@ -1,6 +1,6 @@
 cask "cmd-ime" do
-  version "1.3.3"
-  sha256 "ec9e44ad46f1513b6a8ec684125c2036fca75ed64568e5c8569af5ec065c57ba"
+  version "1.3.4"
+  sha256 "997566bc4d17f185fd426706802286c6dcbe382a8d5b39ec2d5239e1192e093f"
 
   url "https://github.com/agiletec-inc/cmd-ime/releases/download/v#{version}/cmd-ime-#{version}.dmg"
   name "⌘IME"
@@ -18,10 +18,29 @@ cask "cmd-ime" do
     system_command "/usr/bin/xattr",
                    args: ["-cr", "#{appdir}/CmdIME.app"],
                    sudo: false
+    # Refresh LaunchServices so the new bundle's icon and display
+    # name are picked up immediately (otherwise Finder / System
+    # Settings can show a stale entry).
+    lsregister = "/System/Library/Frameworks/CoreServices.framework/" \
+                 "Frameworks/LaunchServices.framework/Support/lsregister"
+    system_command lsregister,
+                   args: ["-f", "#{appdir}/CmdIME.app"],
+                   sudo: false
+    # Auto-launch the new build so the user doesn't have to fish
+    # for it after every upgrade.
+    system_command "/usr/bin/open",
+                   args: ["#{appdir}/CmdIME.app"],
+                   sudo: false
   end
 
+  # Gracefully quit the running menu bar agent before brew replaces
+  # the .app, otherwise the old process keeps running on the freed
+  # binary and macOS will not pick up the new build's Accessibility
+  # entry until the user manually restarts.
+  uninstall quit: "com.kazuki.cmdime"
+
   zap trash: [
-    "~/Library/Preferences/com.kazuki.cmd-ime.plist",
     "~/Library/Application Support/cmd-ime",
+    "~/Library/Preferences/com.kazuki.cmdime.plist",
   ]
 end
