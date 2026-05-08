@@ -1,6 +1,6 @@
 cask "cmd-ime" do
-  version "1.3.7"
-  sha256 "98b15908dbd3aa3d28ea74768f03c966308fbdd5d045e0ed667c9556912d7fab"
+  version "2.0.1"
+  sha256 "d2082904a2f089d42ff47f9b84f24b119da5699899bdbb0d4793e40b6a257568"
 
   url "https://github.com/agiletec-inc/cmd-ime/releases/download/v#{version}/cmd-ime-#{version}.dmg"
   name "⌘IME"
@@ -34,10 +34,14 @@ cask "cmd-ime" do
   end
 
   # Gracefully quit the running menu bar agent before brew replaces
-  # the .app, otherwise the old process keeps running on the freed
-  # binary and macOS will not pick up the new build's Accessibility
-  # entry until the user manually restarts.
-  uninstall quit: "com.kazuki.cmdime"
+  # the .app, then SIGTERM/SIGKILL as fallback. AppleScript "quit"
+  # alone is unreliable for an LSUIElement app under load, so the
+  # signal stanza catches the process even if AE delivery fails.
+  uninstall quit:   "com.kazuki.cmdime",
+            signal: [
+              ["TERM", "com.kazuki.cmdime"],
+              ["KILL", "com.kazuki.cmdime"],
+            ]
 
   zap trash: [
     "~/Library/Application Support/cmd-ime",
