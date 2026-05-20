@@ -1,25 +1,25 @@
 class AirisWorkspace < Formula
   desc "Docker-first monorepo workspace manager for rapid prototyping"
   homepage "https://github.com/agiletec-inc/airis-workspace"
-  version "3.6.7"
+  version "3.19.6"
   if OS.mac?
     if Hardware::CPU.arm?
-      url "https://github.com/agiletec-inc/airis-workspace/releases/download/v3.6.7/airis-workspace-aarch64-apple-darwin.tar.xz"
-      sha256 "eddb6f0bd8a810d0b1ab82abcb1735ee95f6669b52a7ee8d2f797b9af2e1f4eb"
+      url "https://github.com/agiletec-inc/airis-workspace/releases/download/v3.19.6/airis-workspace-aarch64-apple-darwin.tar.xz"
+      sha256 "aaf756e3ded62ee0668e3754a77630feda43f882cc5fd4abab02f455807e6bdf"
     end
     if Hardware::CPU.intel?
-      url "https://github.com/agiletec-inc/airis-workspace/releases/download/v3.6.7/airis-workspace-x86_64-apple-darwin.tar.xz"
-      sha256 "de60d46b32074555bb4866b28a5dcc2c582a7e1ea9b39d4008e1955246381d50"
+      url "https://github.com/agiletec-inc/airis-workspace/releases/download/v3.19.6/airis-workspace-x86_64-apple-darwin.tar.xz"
+      sha256 "01e57cb47efc8be45e46ac39a252e2a9f5c088e2eb65f6dfbfab513070e0bd37"
     end
   end
   if OS.linux?
     if Hardware::CPU.arm?
-      url "https://github.com/agiletec-inc/airis-workspace/releases/download/v3.6.7/airis-workspace-aarch64-unknown-linux-gnu.tar.xz"
-      sha256 "4ab97bf55539472643d1e4ec325d933b90c9ee32b8f7c19ab4445544105871ad"
+      url "https://github.com/agiletec-inc/airis-workspace/releases/download/v3.19.6/airis-workspace-aarch64-unknown-linux-gnu.tar.xz"
+      sha256 "eeb03f14e3331c016c1be4b0901ddb1babc11b7f8e5f9ec941adde673fff93c4"
     end
     if Hardware::CPU.intel?
-      url "https://github.com/agiletec-inc/airis-workspace/releases/download/v3.6.7/airis-workspace-x86_64-unknown-linux-gnu.tar.xz"
-      sha256 "8e7a9dc8f5ccb57212b9122751e5653bbcc84053c882dae7871c7238b6809048"
+      url "https://github.com/agiletec-inc/airis-workspace/releases/download/v3.19.6/airis-workspace-x86_64-unknown-linux-gnu.tar.xz"
+      sha256 "30fad65aa96e8650b88b63c94295654ac96e49df37061298b7860b44d506a230"
     end
   end
   license "MIT"
