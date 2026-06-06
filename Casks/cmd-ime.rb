@@ -1,6 +1,10 @@
 cask "cmd-ime" do
-  version "2.3.2"
-  sha256 "7cf8a7c16ee3beb31ffeb42bf389ac87eb5ceaeab6f64357d4436a4bba638cf9"
+  version "2.4.0"
+  sha256 "0bfd2f88dcfbf14733263096cea72bf03d317b7c0f5e0ac4191913874bfc268b"
+
+  # The app updates itself via Sparkle; tell brew so it does not
+  # treat a Sparkle-updated bundle as outdated and reinstall over it.
+  auto_updates true
 
   url "https://github.com/agiletec-inc/cmd-ime/releases/download/v#{version}/cmd-ime-#{version}.dmg"
   name "⌘IME"
