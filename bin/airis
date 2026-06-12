@@ -1,0 +1,60 @@
+#!/bin/sh
+# airis — AIRIS suite dispatcher.
+# `airis <tool> [args...]` execs `airis-<tool>` found on PATH (git-style).
+# Each suite product installs its own `airis-<tool>` binary; uninstalling a
+# product removes only that tool from the suite.
+set -u
+
+DISPATCHER_VERSION="1.0.0"
+
+list_tools() {
+  # Scan PATH for executable airis-* entries, print unique tool names.
+  IFS=:
+  for dir in $PATH; do
+    [ -d "$dir" ] || continue
+    for f in "$dir"/airis-*; do
+      [ -x "$f" ] && [ ! -d "$f" ] && basename "$f"
+    done
+  done 2>/dev/null | sed 's/^airis-//' | sort -u
+}
+
+usage() {
+  echo "airis — AIRIS suite dispatcher"
+  echo
+  echo "usage: airis <tool> [args...]"
+  echo
+  tools=$(list_tools)
+  if [ -n "$tools" ]; then
+    echo "available tools (airis-* on PATH):"
+    echo "$tools" | sed 's/^/  /'
+  else
+    echo "no airis-* tools found on PATH"
+  fi
+}
+
+case "${1:-}" in
+  "" | -h | --help | help | -l | --list | list)
+    usage
+    ;;
+  -V | --version)
+    echo "airis dispatcher $DISPATCHER_VERSION"
+    ;;
+  *)
+    tool=$1
+    shift
+    if command -v "airis-$tool" >/dev/null 2>&1; then
+      exec "airis-$tool" "$@"
+    fi
+    echo "airis: unknown tool '$tool'" >&2
+    # Legacy muscle memory: bare `airis <cmd>` used to be the workspace CLI.
+    if command -v airis-workspace >/dev/null 2>&1; then
+      echo "hint: workspace commands moved — try: airis workspace $tool $*" >&2
+    fi
+    tools=$(list_tools)
+    if [ -n "$tools" ]; then
+      echo "available tools:" >&2
+      echo "$tools" | sed 's/^/  /' >&2
+    fi
+    exit 127
+    ;;
+esac
