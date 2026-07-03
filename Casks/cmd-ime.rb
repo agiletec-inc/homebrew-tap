@@ -1,6 +1,6 @@
 cask "cmd-ime" do
-  version "2.4.8"
-  sha256 "035b45ffc46d7b8b02f0da7f990e4a5681678e1d32631752029b8441fd9e433f"
+  version "2.4.9"
+  sha256 "a75b95e0f9e79851260cb0a0114deda825f60cc113c73a8a51d3cd1aa79d756d"
 
   # The app updates itself via Sparkle; tell brew so it does not
   # treat a Sparkle-updated bundle as outdated and reinstall over it.
