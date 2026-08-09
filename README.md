@@ -1,4 +1,4 @@
-# Homebrew Tap for Agiletec Inc.
+# Homebrew Tap for Agile Technology, K.K.
 
 ```bash
 brew tap agiletec-inc/tap
