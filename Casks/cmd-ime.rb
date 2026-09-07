@@ -1,6 +1,6 @@
 cask "cmd-ime" do
-  version "2.5.0"
-  sha256 "256f9aa4fb22055bd15039f78361f47345a1d4c32704d37341d8125342866896"
+  version "2.5.1"
+  sha256 "0246dad8ae1bfa3186d36644c818512e5a95ac68a3d9e8aa641a28b4bcea23d5"
 
   # The app updates itself via Sparkle; tell brew so it does not
   # treat a Sparkle-updated bundle as outdated and reinstall over it.
@@ -18,23 +18,21 @@ cask "cmd-ime" do
 
   app "CmdIME.app"
 
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-cr", "#{appdir}/CmdIME.app"],
-                   sudo: false
+  postflight_steps do
+    run "/usr/bin/xattr",
+        args: ["-cr", "{{appdir}}/CmdIME.app"],
+        sudo: false
     # Refresh LaunchServices so the new bundle's icon and display
     # name are picked up immediately (otherwise Finder / System
     # Settings can show a stale entry).
-    lsregister = "/System/Library/Frameworks/CoreServices.framework/" \
-                 "Frameworks/LaunchServices.framework/Support/lsregister"
-    system_command lsregister,
-                   args: ["-f", "#{appdir}/CmdIME.app"],
-                   sudo: false
+    run "/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister",
+        args: ["-f", "{{appdir}}/CmdIME.app"],
+        sudo: false
     # Auto-launch the new build so the user doesn't have to fish
     # for it after every upgrade.
-    system_command "/usr/bin/open",
-                   args: ["#{appdir}/CmdIME.app"],
-                   sudo: false
+    run "/usr/bin/open",
+        args: ["{{appdir}}/CmdIME.app"],
+        sudo: false
   end
 
   # Gracefully quit the running menu bar agent before brew replaces
