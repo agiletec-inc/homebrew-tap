@@ -1,0 +1,27 @@
+name: Check CmdIME cask
+
+on:
+  pull_request:
+    paths:
+      - Casks/cmd-ime.rb
+      - .github/workflows/cmd-ime.yml
+  merge_group:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Audit the proposed cask against the published DMG
+        run: |
+          brew tap agiletec-inc/tap
+          cp Casks/cmd-ime.rb "$(brew --repository agiletec-inc/tap)/Casks/cmd-ime.rb"
+          brew trust --cask agiletec-inc/tap/cmd-ime
+          brew style --cask agiletec-inc/tap/cmd-ime
+          brew audit --online --cask agiletec-inc/tap/cmd-ime
