@@ -2,10 +2,6 @@ cask "cmd-ime" do
   version "2.5.1"
   sha256 "0246dad8ae1bfa3186d36644c818512e5a95ac68a3d9e8aa641a28b4bcea23d5"
 
-  # The app updates itself via Sparkle; tell brew so it does not
-  # treat a Sparkle-updated bundle as outdated and reinstall over it.
-  auto_updates true
-
   url "https://github.com/agiletec-inc/cmd-ime/releases/download/v#{version}/cmd-ime-#{version}.dmg"
   name "⌘IME"
   desc "Command IME - Switch between alphanumeric and kana using Command keys"
@@ -15,6 +11,9 @@ cask "cmd-ime" do
     url :url
     strategy :github_latest
   end
+
+  auto_updates true
+  depends_on macos: ">= :ventura"
 
   app "CmdIME.app"
 
