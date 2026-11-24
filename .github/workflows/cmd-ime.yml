@@ -23,5 +23,5 @@ jobs:
           brew tap agiletec-inc/tap
           cp Casks/cmd-ime.rb "$(brew --repository agiletec-inc/tap)/Casks/cmd-ime.rb"
           brew trust --cask agiletec-inc/tap/cmd-ime
-          brew style --cask agiletec-inc/tap/cmd-ime
+          brew style Casks/cmd-ime.rb
           brew audit --online --cask agiletec-inc/tap/cmd-ime
