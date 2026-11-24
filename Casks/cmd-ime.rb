@@ -19,9 +19,6 @@ cask "cmd-ime" do
   app "CmdIME.app"
 
   postflight_steps do
-    run "/usr/bin/xattr",
-        args: ["-cr", "{{appdir}}/CmdIME.app"],
-        sudo: false
     # Refresh LaunchServices so the new bundle's icon and display
     # name are picked up immediately (otherwise Finder / System
     # Settings can show a stale entry).
